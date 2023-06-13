@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserModel } from './user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
+import { RegisterDto } from 'src/auth/models/register.dto';
 
 @Injectable()
 export class UserService {
@@ -14,14 +15,18 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async create(data): Promise<UserModel> {
+  async create(registerDto: RegisterDto): Promise<UserModel> {
     const user: UserModel = new UserModel();
-    user.email = data.email;
-    user.first_name = data.first_name;
-    user.last_name = data.last_name;
-    const hash = await bcrypt.hash(data.password, 12);
-    user.password = hash;
 
+    if (registerDto.password !== registerDto.confirm_password) {
+      throw new BadRequestException('Password does not match');
+    }
+
+    user.email = registerDto.email;
+    user.first_name = registerDto.first_name;
+    user.last_name = registerDto.last_name;
+    const hash = await bcrypt.hash(registerDto.password, 12);
+    user.password = hash;
     return user.save();
   }
 }
