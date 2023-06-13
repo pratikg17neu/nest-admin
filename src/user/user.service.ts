@@ -93,4 +93,8 @@ export class UserService {
 
     return user.save();
   }
+
+  async delete(id: string) {
+    return this.userRepository.destroy({ where: { id: id } });
+  }
 }
