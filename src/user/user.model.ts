@@ -14,7 +14,7 @@ export class UserModel extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
     allowNull: false,
   })
   id: number;
