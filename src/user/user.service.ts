@@ -4,12 +4,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserModel } from './user.model';
+import { UserModel } from './models/user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from 'src/auth/models/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { UserCreateDto } from './models/user-create.dto';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async create(registerDto: RegisterDto): Promise<UserModel> {
+  async register(registerDto: RegisterDto): Promise<UserModel> {
     const user: UserModel = new UserModel();
 
     if (registerDto.password !== registerDto.confirm_password) {
@@ -63,11 +64,22 @@ export class UserService {
   async findUserByEmail(email: string) {
     return this.userRepository.findOne({ where: { email: email } });
   }
+
   async findUserById(id: string) {
     return this.userRepository.findOne({ where: { id: id } });
   }
 
   getUser(id: string) {
     return this.findUserById(id);
+  }
+
+  async create(userCreateDto: UserCreateDto): Promise<UserModel> {
+    const user: UserModel = new UserModel();
+    user.email = userCreateDto.email;
+    user.first_name = userCreateDto.first_name;
+    user.last_name = userCreateDto.last_name;
+    const hash = await bcrypt.hash('1234', 12);
+    user.password = hash;
+    return user.save();
   }
 }

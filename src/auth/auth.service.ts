@@ -8,7 +8,7 @@ export class AuthService {
   constructor(private readonly userService: UserService) {}
 
   async registerUser(data: RegisterDto) {
-    return this.userService.create(data);
+    return this.userService.register(data);
   }
 
   async loginUser(email: string, password: string, res: Response) {
