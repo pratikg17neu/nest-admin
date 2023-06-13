@@ -14,4 +14,10 @@ export class AuthService {
   async loginUser(email: string, password: string, res: Response) {
     return this.userService.loginUser(email, password, res);
   }
+
+  async getUser(id: string) {
+    const user = (await this.userService.getUser(id)).toJSON();
+    delete user.password;
+    return user;
+  }
 }

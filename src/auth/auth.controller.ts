@@ -1,11 +1,15 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { RegisterDto } from './models/register.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -19,5 +23,22 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.loginUser(email, password, res);
+  }
+
+  @Get('user')
+  async user(@Req() req: Request) {
+    const cookie = req.cookies['jwt'];
+
+    const data = await this.jwtService.verifyAsync(cookie);
+    return this.authService.getUser(data.id);
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt');
+
+    return {
+      message: 'Logout success',
+    };
   }
 }
