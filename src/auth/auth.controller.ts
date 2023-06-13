@@ -1,9 +1,18 @@
 import { JwtService } from '@nestjs/jwt';
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { RegisterDto } from './models/register.dto';
 import { Response, Request } from 'express';
+import { AuthGuard } from './auth.guard';
 @Controller()
 export class AuthController {
   constructor(
@@ -25,6 +34,7 @@ export class AuthController {
     return this.authService.loginUser(email, password, res);
   }
 
+  @UseGuards(AuthGuard)
   @Get('user')
   async user(@Req() req: Request) {
     const cookie = req.cookies['jwt'];
@@ -33,6 +43,7 @@ export class AuthController {
     return this.authService.getUser(data.id);
   }
 
+  @UseGuards(AuthGuard)
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt');
