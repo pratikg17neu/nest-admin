@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UserModel } from './models/user.model';
 import { InjectModel } from '@nestjs/sequelize';
@@ -96,5 +95,31 @@ export class UserService {
 
   async delete(id: string) {
     return this.userRepository.destroy({ where: { id: id } });
+  }
+
+  async paginate(page: number = 1): Promise<any> {
+    const limit = 10;
+
+    const data = await this.userRepository.findAndCountAll({
+      offset: (page - 1) * limit,
+      limit: limit,
+    });
+
+    const total = data.count;
+    const users = data.rows.map((user) => {
+      let data = user;
+      delete data.password;
+      return data;
+    });
+
+    return {
+      data: users,
+
+      meta: {
+        total,
+        page,
+        last_page: Math.ceil(total / limit),
+      },
+    };
   }
 }
