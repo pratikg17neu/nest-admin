@@ -5,7 +5,10 @@ import {
   PrimaryKey,
   DataType,
   AutoIncrement,
+  BelongsToMany,
 } from 'sequelize-typescript';
+import { PermissionModel } from 'src/permission/models/permission.model';
+import { RolePermissionModel } from './role-permission.model';
 
 @Table({
   tableName: 'roles',
@@ -23,4 +26,7 @@ export class RoleModel extends Model {
     type: DataType.STRING,
   })
   name: string;
+
+  @BelongsToMany(() => PermissionModel, () => RolePermissionModel)
+  permissions: PermissionModel[];
 }
