@@ -13,7 +13,7 @@ import { PermissionModel } from './models/permission.model';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RoleDto } from 'src/role/models/role-create.dto';
 
-@Controller('permission')
+@Controller('permissions')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
