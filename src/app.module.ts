@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { UserModel } from './user/user.model';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
       port: 5432,
       username: 'postgres',
       password: 'dell',
-      database: 'nestjs-admin',
+      
       autoLoadModels: true,
       synchronize: true,
     }),
