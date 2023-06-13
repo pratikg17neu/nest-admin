@@ -14,7 +14,7 @@ export class RoleService {
   ) {}
 
   async findAll(): Promise<RoleModel[]> {
-    return this.roleRepository.findAll();
+    return this.roleRepository.findAll({ include: PermissionModel });
   }
 
   getRole(id: string): Promise<RoleModel> {
