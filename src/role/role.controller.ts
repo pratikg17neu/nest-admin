@@ -11,7 +11,7 @@ import {
 import { RoleModel } from './models/role.model';
 import { RoleService } from './role.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RoleDto } from './models/role-create.dro';
+import { RoleDto } from './models/role-create.dto';
 
 @Controller('roles')
 export class RoleController {

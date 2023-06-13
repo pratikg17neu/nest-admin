@@ -7,6 +7,7 @@ import { UserModel } from './user/models/user.model';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RoleModule } from './role/role.module';
     AuthModule,
     CommonModule,
     RoleModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
