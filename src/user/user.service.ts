@@ -1,14 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserModel } from './user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from 'src/auth/models/register.dto';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(UserModel)
     private userRepository: typeof UserModel,
+    private jwtService: JwtService,
   ) {}
 
   async findAll(): Promise<UserModel[]> {
@@ -28,5 +36,31 @@ export class UserService {
     const hash = await bcrypt.hash(registerDto.password, 12);
     user.password = hash;
     return user.save();
+  }
+
+  async loginUser(email: string, password: string, res: Response) {
+    const user = await this.findUserByEmail(email);
+
+    if (!user) {
+      return new NotFoundException('User not found');
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      throw new BadRequestException('Password doest match');
+    }
+    const payload = { id: user.id };
+    const token = await this.jwtService.signAsync(payload);
+    res.cookie('jwt', token, { httpOnly: true });
+
+    return {
+      ...user.dataValues,
+      token: token,
+    };
+  }
+
+  async findUserByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email: email } });
   }
 }
