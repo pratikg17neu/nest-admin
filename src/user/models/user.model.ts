@@ -5,7 +5,10 @@ import {
   PrimaryKey,
   DataType,
   AutoIncrement,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { RoleModel } from 'src/role/models/role.model';
 
 @Table({
   tableName: 'users',
@@ -38,4 +41,11 @@ export class UserModel extends Model {
     type: DataType.STRING,
   })
   password: string;
+
+  @ForeignKey(() => RoleModel)
+  @Column
+  role_id: number;
+
+  @BelongsTo(() => RoleModel)
+  role: RoleModel;
 }

@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { UserCreateDto } from './models/user-create.dto';
 import { UserUpdateDto } from './models/user-update.dto';
+import { RoleModel } from 'src/role/models/role.model';
 
 @Injectable()
 export class UserService {
@@ -80,6 +81,7 @@ export class UserService {
     user.last_name = userCreateDto.last_name;
     const hash = await bcrypt.hash('1234', 12);
     user.password = hash;
+    user.role_id = userCreateDto.role_id;
     return user.save();
   }
 
@@ -103,6 +105,7 @@ export class UserService {
     const data = await this.userRepository.findAndCountAll({
       offset: (page - 1) * limit,
       limit: limit,
+      include: RoleModel,
     });
 
     const total = data.count;
