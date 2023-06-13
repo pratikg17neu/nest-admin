@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { RoleModel } from './models/role.model';
-import { RoleCreateDto } from './models/role-create.dro';
+import { RoleDto } from './models/role-create.dro';
 
 @Injectable()
 export class RoleService {
@@ -18,13 +18,13 @@ export class RoleService {
     return this.findRoleById(id);
   }
 
-  async create(roleCreateDto: RoleCreateDto): Promise<RoleModel> {
+  async create(roleDto: RoleDto): Promise<RoleModel> {
     const role: RoleModel = new RoleModel();
-    role.name = roleCreateDto.name;
+    role.name = roleDto.name;
     return role.save();
   }
 
-  async update(id: string, roleDto: RoleCreateDto): Promise<RoleModel> {
+  async update(id: string, roleDto: RoleDto): Promise<RoleModel> {
     const role = await this.getRole(id);
     role.name = roleDto.name;
     return role.save();
